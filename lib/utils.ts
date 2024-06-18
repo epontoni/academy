@@ -63,3 +63,5 @@ export const checkRole = (role: Roles) => {
 
   return sessionClaims?.metadata.role === role;
 };
+
+export const convertFileToUrl = (file: File) => URL.createObjectURL(file);

@@ -1,6 +1,11 @@
 import { ICourse } from "@/lib/database/models/course.model";
 import { LucideProps } from "lucide-react";
-import { ForwardRefExoticComponent, RefAttributes } from "react";
+import {
+  Dispatch,
+  ForwardRefExoticComponent,
+  RefAttributes,
+  SetStateAction,
+} from "react";
 
 export type MenuItem = {
   href: string;
@@ -13,6 +18,10 @@ export type MenuItem = {
 export type CreateCourseParams = {
   title: string;
   description: string;
+  isPublished: boolean;
+  imageUrl: string;
+  instructor: string;
+  category: string;
 };
 
 export type CourseFormProps = {
@@ -64,4 +73,15 @@ export type UpdateUserParams = {
   userId?: string;
   refreshToken?: string;
   publicKey?: string;
+};
+
+export type FileUploadProps = {
+  imageUrl: string;
+  onFileChange: (value: string) => void;
+  setFiles: Dispatch<SetStateAction<File[]>>;
+};
+
+// ====== CATEGORY PARAMS
+export type CreateCategoryParams = {
+  categoryName: string;
 };

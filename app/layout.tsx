@@ -1,10 +1,4 @@
-import {
-  ClerkProvider,
-  SignInButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
@@ -35,15 +29,11 @@ export default async function RootLayout({
 }>) {
   const { sessionClaims } = auth();
   const userId = sessionClaims?.metadata?.userId as string;
-  const themeScheme = await getData(userId);
+  const colorScheme = await getData(userId);
   return (
     <ClerkProvider>
       <html lang="en">
-        <body
-          className={`${inter.className} ${
-            themeScheme?.colorScheme || "theme-yellow"
-          }`}
-        >
+        <body className={`${inter.className} ${colorScheme || "theme-yellow"}`}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             {children}
             <Toaster />
