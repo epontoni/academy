@@ -72,6 +72,7 @@ export default function FileUpload({
           <CloudUpload className="w-10 h-10 mx-auto" />
           <h3 className="mb-2 mt-2">Arrastrar y soltar aquí</h3>
           <p className="text-sm text-muted-foreground mb-4">SVG, PNG, JPG</p>
+          <p className="text-xs mb-4">(Max size 4mb)</p>
           <Button type="button" className="rounded-full">
             Seleccionar desde la computadora
           </Button>

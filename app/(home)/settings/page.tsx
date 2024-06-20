@@ -1,4 +1,3 @@
-import ColorScheme from "@/components/color-scheme";
 import { ColorSchemeForm } from "@/components/color-scheme-form";
 import {
   Card,
@@ -10,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { getUserById } from "@/lib/database/actions/user.actions";
 import { auth } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 export default async function SettingsPage() {
   const { sessionClaims } = auth();
@@ -19,6 +19,8 @@ export default async function SettingsPage() {
   let initialValues;
   if (userId) {
     initialValues = await getUserById(userId);
+  } else {
+    redirect("/");
   }
 
   return (

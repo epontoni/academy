@@ -15,7 +15,10 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { createCourse } from "@/lib/database/actions/course.actions";
+import {
+  createCourse,
+  updateCourse,
+} from "@/lib/database/actions/course.actions";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
 import { CourseFormProps, courseDefaultValues } from "@/types";
@@ -27,6 +30,9 @@ import { useRouter } from "next/navigation";
 import FileUpload from "@/components/file-upload";
 import { Switch } from "@/components/ui/switch";
 import { Loader2 } from "lucide-react";
+import { handleError } from "@/lib/utils";
+import { ICategory } from "@/lib/database/models/category.model";
+import RichEditor from "./RichEditor";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -82,10 +88,10 @@ export function CourseForm({
       uploadedImageUrl = uploadedImages[0].url;
     }
 
-    const course = {
-      title: values.title,
-      description: values.description,
-    };
+    // const course = {
+    //   title: values.title,
+    //   description: values.description,
+    // };
 
     // CREATE COURSE
     if (type === "Create") {
@@ -107,47 +113,36 @@ export function CourseForm({
         }
       } catch (e) {
         console.log("[Error]: Error al crear el curso.");
+        handleError(e);
       }
     }
 
-    //   // CREATE EVENT
-    //   if (type === "Create") {
-    //     try {
-    //       const newEvent = await createEvent({
-    //         event: { ...values, imageUrl: uploadedImageUrl },
-    //         userId,
-    //         path: "/dashboard/profile",
-    //       });
-    //       if (newEvent) {
-    //         form.reset();
-    //         router.push(`/events/${newEvent._id}`);
-    //       }
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //   }
-
-    //   // UPDATE EVENT
-    //   if (type === "Update") {
-    //     if (!eventId) {
-    //       router.back();
-    //       return;
-    //     }
-    //     try {
-    //       const updatedEvent = await updateEvent({
-    //         event: { ...values, _id: eventId, imageUrl: uploadedImageUrl },
-    //         userId,
-    //         path: `/events/${eventId}`,
-    //       });
-    //       if (updatedEvent) {
-    //         form.reset();
-    //         router.push(`/events/${updatedEvent._id}`);
-    //       }
-    //     } catch (error) {
-    //       handleError(error);
-    //     }
-    //   }
-    // }
+    // UPDATE EVENT
+    if (type === "Update") {
+      if (!courseId) {
+        router.back();
+        return;
+      }
+      try {
+        const updatedCourse = await updateCourse({
+          course: {
+            ...values,
+            //category: values.category as Partial<ICategory>,
+            _id: courseId,
+            imageUrl: uploadedImageUrl,
+          },
+          userId,
+          path: `/courses/${courseId}`,
+        });
+        if (updatedCourse) {
+          form.reset();
+          router.push(`/events/${updatedCourse._id}`);
+        }
+      } catch (error) {
+        console.log("[Error]: Error al actualizar el curso.");
+        handleError(error);
+      }
+    }
   }
 
   return (
@@ -221,7 +216,8 @@ export function CourseForm({
               <FormItem className="w-full rounded-lg border p-4">
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Textarea placeholder="Description" {...field} />
+                  {/* <Textarea placeholder="Description" {...field} /> */}
+                  <RichEditor placeholder="Description..." {...field} />
                 </FormControl>
                 <FormDescription>
                   This is your public display name.
