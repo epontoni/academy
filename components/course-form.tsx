@@ -209,7 +209,7 @@ export function CourseForm({
                   <FormControl>
                     <Dropdown
                       onChangeHandler={field.onChange}
-                      categoryId={course?.category?._id}
+                      categoryId={course?.category} // course?.category?._id
                     />
                   </FormControl>
                   <FormMessage />
