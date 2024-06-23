@@ -1,4 +1,4 @@
-import Category from "@/lib/database/models/category.model";
+import Category, { ICategory } from "@/lib/database/models/category.model";
 import { ICourse } from "@/lib/database/models/course.model";
 import { LucideProps } from "lucide-react";
 import {
@@ -34,7 +34,7 @@ export type CourseFormProps = {
     isPublished: boolean;
     imageUrl: string;
     instructor: string;
-    category: string;
+    category: ICategory;
   };
   courseId?: string;
 };
