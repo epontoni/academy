@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
-import { IUnit } from "./unit.model";
-import { IAttachment } from "./attachment.models";
+import { IUnit } from "@/lib/database/models/unit.model";
+import { IAttachment } from "@/lib/database/models/attachment.model";
 
 export interface ILesson extends Document {
   _id: string;
