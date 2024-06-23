@@ -22,7 +22,7 @@ export type CreateCourseParams = {
   isPublished?: boolean;
   imageUrl: string;
   instructor: string;
-  category?: string;
+  category: string;
 };
 
 export type CourseFormProps = {

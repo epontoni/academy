@@ -130,7 +130,7 @@ export function CourseForm({
         const updatedCourse = await updateCourse({
           course: {
             ...values,
-            //category: values.category as Partial<ICategory>,
+            category: values.category,
             _id: courseId,
             imageUrl: uploadedImageUrl,
           },
@@ -209,7 +209,7 @@ export function CourseForm({
                   <FormControl>
                     <Dropdown
                       onChangeHandler={field.onChange}
-                      categoryId={course?.category?._id as ICategory}
+                      categoryId={course?.category?._id}
                     />
                   </FormControl>
                   <FormMessage />
