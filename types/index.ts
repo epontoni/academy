@@ -28,7 +28,14 @@ export type CreateCourseParams = {
 export type CourseFormProps = {
   userId: string;
   type: "Create" | "Update";
-  course?: ICourse;
+  course?: {
+    title: string;
+    description: string;
+    isPublished?: boolean;
+    imageUrl: string;
+    instructor: string;
+    category: string;
+  };
   courseId?: string;
 };
 

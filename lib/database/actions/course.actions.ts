@@ -1,6 +1,7 @@
 "use server";
 
 import { connectToDatabase } from "@/lib/database";
+import { ObjectId } from "mongoose";
 import {
   CreateCourseParams,
   DeleteCourseParams,
@@ -79,7 +80,7 @@ export async function updateCourse({
 
     const updatedCourse = await Course.findByIdAndUpdate(
       course._id,
-      { ...course, category: course.category },
+      { ...course, category: ObjectId(course.category) },
       { new: true }
     );
     revalidatePath(path);

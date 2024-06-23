@@ -34,7 +34,7 @@ export default function HomeLayout({
         <div className="p-2 hidden sm:block">
           <Button variant="outline" size="icon" aria-label="Logo" asChild>
             <Link href="/">
-              <GraduationCap className="size-5" />
+              <GraduationCap className="size-5 transition-transform duration-300 transform hover:-rotate-12 hover:scale-110" />
             </Link>
           </Button>
         </div>
