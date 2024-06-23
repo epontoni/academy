@@ -13,6 +13,7 @@ import { handleError } from "@/lib/utils";
 import Category from "@/lib/database/models/category.model";
 import User from "@/lib/database/models/user.model";
 import { revalidatePath } from "next/cache";
+import Unit from "../models/unit.model";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: `^${name}$`, $options: "i" } }); // name -> `^${name}$` para devolver los documentos que coincidan exactamente con el nombre proporcionado
@@ -26,6 +27,7 @@ const populateCourse = async (query: any) => {
       select: "_id firstName lastName",
     })
     .populate({ path: "category", model: Category, select: "_id name" });
+  //.populate({ path: "units", model: Unit, select: "_id title description position"});
 };
 
 export async function createCourse(course: CreateCourseParams) {

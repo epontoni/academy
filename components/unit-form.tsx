@@ -15,10 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  createCourse,
-  updateCourse,
-} from "@/lib/database/actions/course.actions";
+
 import { toast } from "sonner";
 import {
   CourseFormProps,
@@ -46,8 +43,6 @@ const formSchema = z.object({
   description: z.string().min(10, {
     message: "The description must be at least 10 characters.",
   }),
-  imageUrl: z.string().url("La URL de la imagen no es válida"),
-  category: z.string(),
   isPublished: z.boolean().default(false),
 });
 
@@ -59,17 +54,23 @@ type UnitFormProps = {
 };
 
 export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
-  const [files, setFiles] = useState<File[]>([]);
-  const { startUpload } = useUploadThing("imageUploader");
+  // const [files, setFiles] = useState<File[]>([]);
+  // const { startUpload } = useUploadThing("imageUploader");
+
+  console.log("Creando...", type, courseId);
 
   const router = useRouter();
   const pathname = usePathname();
-  const initialValues =
-    course && type === "Update"
-      ? {
-          ...course,
-        }
-      : courseDefaultValues;
+  const initialValues = {
+    title: "",
+    description: "",
+    isPublished: false,
+  };
+  // course && type === "Update"
+  //   ? {
+  //       ...course,
+  //     }
+  //   : courseDefaultValues;
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -81,30 +82,35 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    let uploadedImageUrl = values.imageUrl;
+    // let uploadedImageUrl = values.imageUrl;
 
-    if (files.length > 0) {
-      const uploadedImages = await startUpload(files);
+    // if (files.length > 0) {
+    //   const uploadedImages = await startUpload(files);
 
-      if (!uploadedImages) {
-        return;
-      }
+    //   if (!uploadedImages) {
+    //     return;
+    //   }
 
-      uploadedImageUrl = uploadedImages[0].url;
-    }
+    //   uploadedImageUrl = uploadedImages[0].url;
+    // }
+
+    console.log("Creando...", type, values, courseId);
 
     // CREATE COURSE
     if (type === "Create") {
       try {
+        console.log("Creando...", type, values, courseId);
         const newUnit = await createUnit({
           title: values.title,
           description: values.description,
+          isPublished: values.isPublished,
           courseId: courseId!,
         });
 
         if (newUnit) {
           form.reset();
-          router.push(`/dashboard/edit/${newUnit.courseId}/curriculum`);
+          //router.push(`/dashboard/edit/${newUnit.courseId}/curriculum`);
+          toast.success("Unidad creada correctamente!");
         } else {
           toast.error("Something went wrong");
         }
@@ -230,7 +236,7 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
               )}
             />
 
-            <FormField
+            {/* <FormField
               control={form.control}
               name="imageUrl"
               render={({ field }) => (
@@ -246,7 +252,7 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
                   <FormMessage />
                 </FormItem>
               )}
-            />
+            /> */}
           </div>
 
           <Button
@@ -268,9 +274,9 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
                 </>
               )
             ) : type === "Create" ? (
-              "Crear curso"
+              "Crear unidad"
             ) : (
-              "Editar curso"
+              "Editar unidad"
             )}
           </Button>
         </form>

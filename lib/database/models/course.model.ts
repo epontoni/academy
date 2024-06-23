@@ -1,6 +1,6 @@
 import { Schema, model, models } from "mongoose";
-import { ICategory } from "./category.model";
-import { IUnit } from "./unit.model";
+import { ICategory } from "@/lib/database/models/category.model";
+import { IUnit } from "@/lib/database/models/unit.model";
 
 export interface ICourse extends Document {
   _id: string;

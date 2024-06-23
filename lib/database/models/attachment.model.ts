@@ -1,5 +1,5 @@
 import { Schema, model, models } from "mongoose";
-import { ILesson } from "./lesson.model";
+import { ILesson } from "@/lib/database/models/lesson.model";
 
 export interface IAttachment extends Document {
   _id: string;
