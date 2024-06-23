@@ -4,6 +4,7 @@ import { Progress } from "@/components/ui/progress";
 import { getCourseById } from "@/lib/database/actions/course.actions";
 import { BookOpen, CirclePlay } from "lucide-react";
 import Image from "next/image";
+import DOMPurify from "isomorphic-dompurify";
 
 type GetCourseProps = {
   params: {
@@ -28,7 +29,12 @@ export default async function ({ params: { id } }: GetCourseProps) {
           <BookOpen className="mr-2" /> 3 Units
         </Badge>
         <h1 className="font-bold text-2xl">{course.title}</h1>
-        <h2 className="text-foreground">{course.description}</h2>
+        <div
+          className="text-foreground"
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(course.description),
+          }}
+        />
         <Badge variant="secondary">{course.category.name}</Badge>
         <Progress value={33} />
         <h3>33% Complete</h3>

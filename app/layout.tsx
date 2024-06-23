@@ -20,6 +20,8 @@ async function getData(userId: string) {
 
     return data.colorScheme;
   }
+
+  return null;
 }
 
 export default async function RootLayout({

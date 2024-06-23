@@ -1,3 +1,4 @@
+import Category from "@/lib/database/models/category.model";
 import { ICourse } from "@/lib/database/models/course.model";
 import { LucideProps } from "lucide-react";
 import {
@@ -27,11 +28,24 @@ export type CreateCourseParams = {
 export type CourseFormProps = {
   userId: string;
   type: "Create" | "Update";
-  course?: ICourse;
+  course?: {
+    title: string;
+    description: string;
+    isPublished: boolean;
+    imageUrl: string;
+    instructor: string;
+    category: string;
+  };
   courseId?: string;
 };
 
-export const courseDefaultValues = {};
+export const courseDefaultValues = {
+  title: "",
+  description: "",
+  isPublished: false,
+  imageUrl: "",
+  category: "",
+};
 
 // ====== USER PARAMS
 export type CreateUserParams = {
@@ -93,7 +107,16 @@ export type DeleteCourseParams = {
 
 export type UpdateCourseParams = {
   userId: string;
-  course: Partial<ICourse>; // Check the Partial<>
+  // course: Partial<ICourse>; // Check the Partial<>
+  course: {
+    _id: string;
+    title: string;
+    description: string;
+    // instructor: string;
+    imageUrl: string;
+    isPublished: boolean;
+    category: string;
+  };
   path: string;
 };
 

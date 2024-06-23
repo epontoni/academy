@@ -37,6 +37,7 @@ import { handleError } from "@/lib/utils";
 
 import RichEditor from "./RichEditor";
 import Link from "next/link";
+import { createUnit } from "@/lib/database/actions/unit.actions";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -50,12 +51,14 @@ const formSchema = z.object({
   isPublished: z.boolean().default(false),
 });
 
-export function CourseForm({
-  userId,
-  type,
-  course,
-  courseId,
-}: CourseFormProps) {
+type UnitFormProps = {
+  userId?: string;
+  type: "Create" | "Update";
+  course?: {};
+  courseId: string;
+};
+
+export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
   const [files, setFiles] = useState<File[]>([]);
   const { startUpload } = useUploadThing("imageUploader");
 
@@ -90,26 +93,18 @@ export function CourseForm({
       uploadedImageUrl = uploadedImages[0].url;
     }
 
-    // const course = {
-    //   title: values.title,
-    //   description: values.description,
-    // };
-
     // CREATE COURSE
     if (type === "Create") {
       try {
-        const newCourse = await createCourse({
+        const newUnit = await createUnit({
           title: values.title,
           description: values.description,
-          isPublished: values.isPublished,
-          imageUrl: uploadedImageUrl,
-          instructor: userId,
-          category: values.category,
+          courseId: courseId!,
         });
 
-        if (newCourse) {
+        if (newUnit) {
           form.reset();
-          router.push(`/courses/${newCourse._id}`);
+          router.push(`/dashboard/edit/${newUnit.courseId}/curriculum`);
         } else {
           toast.error("Something went wrong");
         }
@@ -176,6 +171,7 @@ export function CourseForm({
           </div>
         </div>
       )}
+      <h1 className="font-bold text-xl mb-2">Add new unit</h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -187,29 +183,9 @@ export function CourseForm({
               name="title"
               render={({ field }) => (
                 <FormItem className="w-full rounded-lg border p-4">
-                  <FormLabel>Course title</FormLabel>
+                  <FormLabel>Unit name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Introduction to algebra" {...field} />
-                  </FormControl>
-                  {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem className="w-full rounded-lg border p-4">
-                  <FormLabel>Categoría</FormLabel>
-                  <FormControl>
-                    <Dropdown
-                      onChangeHandler={field.onChange}
-                      categoryId={course?.category._id}
-                    />
+                    <Input placeholder="Introduction" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -249,9 +225,6 @@ export function CourseForm({
                     {/* <Textarea placeholder="Description" {...field} /> */}
                     <RichEditor placeholder="Description..." {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
                   <FormMessage />
                 </FormItem>
               )}
@@ -297,7 +270,7 @@ export function CourseForm({
             ) : type === "Create" ? (
               "Crear curso"
             ) : (
-              "Editar cursp"
+              "Editar curso"
             )}
           </Button>
         </form>
