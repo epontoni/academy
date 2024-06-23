@@ -19,7 +19,7 @@ export type MenuItem = {
 export type CreateCourseParams = {
   title: string;
   description: string;
-  isPublished: boolean;
+  isPublished?: boolean;
   imageUrl: string;
   instructor: string;
   category: string;
