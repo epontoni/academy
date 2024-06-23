@@ -3,11 +3,13 @@
 import { UniqueIdentifier } from "@dnd-kit/core";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { GripVertical } from "lucide-react";
+import { GripVertical, Pencil } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 
 interface Item {
   _id: string;
   title: string;
+  isPublished: boolean;
   position: UniqueIdentifier;
 }
 
@@ -32,6 +34,18 @@ export default function SortableItem({ item }: { item: Item }) {
     >
       <GripVertical />
       {item.title}
+      <div className="flex items-center gap-4 ml-auto">
+        <Badge
+          className="ml-auto"
+          variant={item.isPublished ? "default" : "secondary"}
+        >
+          {item.isPublished ? "Published" : "Unpublished"}
+        </Badge>
+        <Pencil
+          className="ml-auto h-4 w-4 hover:text-primary"
+          onClick={() => {}}
+        />
+      </div>
     </div>
   );
 }

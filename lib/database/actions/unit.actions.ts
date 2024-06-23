@@ -26,6 +26,9 @@ export async function createUnit(unit: CreateUnitParams) {
       ...unit,
       position: newPosition,
     });
+
+    revalidatePath(`/dashboard/edit/${unit.courseId}/curriculum`);
+
     return JSON.parse(JSON.stringify(newUnit));
   } catch (error) {
     handleError(error);
