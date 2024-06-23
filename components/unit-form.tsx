@@ -115,31 +115,31 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
     }
 
     // UPDATE EVENT
-    if (type === "Update") {
-      if (!courseId) {
-        router.back();
-        return;
-      }
-      try {
-        const updatedCourse = await updateCourse({
-          course: {
-            ...values,
-            //category: values.category as Partial<ICategory>,
-            _id: courseId,
-            imageUrl: uploadedImageUrl,
-          },
-          userId,
-          path: `/courses/${courseId}`,
-        });
-        if (updatedCourse) {
-          form.reset();
-          router.push(`/courses/${updatedCourse._id}`);
-        }
-      } catch (error) {
-        console.log("[Error]: Error al actualizar el curso.");
-        handleError(error);
-      }
-    }
+    // if (type === "Update") {
+    //   if (!courseId) {
+    //     router.back();
+    //     return;
+    //   }
+    //   try {
+    //     const updatedCourse = await updateUnit({
+    //       course: {
+    //         ...values,
+    //         //category: values.category as Partial<ICategory>,
+    //         _id: courseId,
+    //         imageUrl: uploadedImageUrl,
+    //       },
+    //       userId,
+    //       path: `/courses/${courseId}`,
+    //     });
+    //     if (updatedCourse) {
+    //       form.reset();
+    //       router.push(`/courses/${updatedCourse._id}`);
+    //     }
+    //   } catch (error) {
+    //     console.log("[Error]: Error al actualizar el curso.");
+    //     handleError(error);
+    //   }
+    // }
   }
 
   const routes = [
@@ -200,7 +200,7 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
                   <div className="space-y-0.5">
                     <FormLabel className="text-base">Publicación</FormLabel>
                     <FormDescription>
-                      En caso de estar activado, este curso será visible.
+                      En caso de estar activado, esta unidad será visible.
                     </FormDescription>
                   </div>
                   <FormControl>
