@@ -22,20 +22,13 @@ export type CreateCourseParams = {
   isPublished: boolean;
   imageUrl: string;
   instructor: string;
-  category: ICategory;
+  category: string;
 };
 
 export type CourseFormProps = {
   userId: string;
   type: "Create" | "Update";
-  course?: {
-    title: string;
-    description: string;
-    isPublished: boolean;
-    imageUrl: string;
-    instructor: string;
-    category: ICategory;
-  };
+  course?: ICourse;
   courseId?: string;
 };
 

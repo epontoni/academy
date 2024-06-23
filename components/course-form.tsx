@@ -37,6 +37,7 @@ import { handleError } from "@/lib/utils";
 
 import RichEditor from "./RichEditor";
 import Link from "next/link";
+import { ICategory } from "@/lib/database/models/category.model";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -208,7 +209,7 @@ export function CourseForm({
                   <FormControl>
                     <Dropdown
                       onChangeHandler={field.onChange}
-                      categoryId={course?.category?._id}
+                      categoryId={course?.category?._id as ICategory}
                     />
                   </FormControl>
                   <FormMessage />

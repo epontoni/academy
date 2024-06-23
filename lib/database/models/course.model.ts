@@ -14,7 +14,7 @@ export interface ICourse extends Document {
   };
   imageUrl: string;
   isPublished: Boolean;
-  category: ICategory;
+  category: { _id: string; name: string };
   units: IUnit[];
 
   createdAt: Date;
