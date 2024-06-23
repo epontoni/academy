@@ -13,7 +13,7 @@ export interface ICourse extends Document {
     lastName: string;
   };
   imageUrl: string;
-  isPublished: Boolean;
+  isPublished: boolean;
   category: { _id: string; name: string };
   units: IUnit[];
 
