@@ -4,7 +4,7 @@ import { ILesson } from "@/lib/database/models/lesson.model";
 export interface IAttachment extends Document {
   _id: string;
 
-  title: string;
+  resourceName: string;
   resourceUrl: string;
   lessonId: ILesson;
 
@@ -14,7 +14,7 @@ export interface IAttachment extends Document {
 
 const AttachmentSchema = new Schema(
   {
-    title: { type: String, required: true },
+    resourceName: { type: String, required: true },
     resourceUrl: { type: String, required: true },
     lessonId: { type: Schema.Types.ObjectId, ref: "Lesson" },
   },

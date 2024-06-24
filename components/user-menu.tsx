@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { User, currentUser } from "@clerk/nextjs/server";
 import { SignIn, SignOutButton } from "@clerk/nextjs";
-import { MENU_ITEMS } from "@/constants";
+import { MENU_ITEMS_USER } from "@/constants";
 import Link from "next/link";
 import { DoorClosed } from "lucide-react";
 
@@ -56,7 +56,7 @@ export default async function UserMenu() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          {MENU_ITEMS.map((item, index) => (
+          {MENU_ITEMS_USER.map((item, index) => (
             <DropdownMenuItem asChild key={index}>
               <Link href={item.href} className="w-full flex justify-between">
                 {item.label}

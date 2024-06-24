@@ -24,6 +24,8 @@ export const SettingsButton = {
   icon: Settings,
 };
 
+export const MENU_ITEMS_USER = MENU_ITEMS.concat([SettingsButton]);
+
 export const COLOR_SCHEMES = [
   "theme-zinc",
   "theme-slate",

@@ -1,0 +1,12 @@
+.typewriter {
+    border-right: 0.1em solid #0f172a;
+    animation: caret 1s steps(1) infinite;
+    vertical-align: baseline;
+    animation-timing-function: linear;
+}
+
+@keyframes caret {
+    50% {
+        border-color: transparent;
+    }
+}
