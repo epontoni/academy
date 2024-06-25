@@ -5,6 +5,7 @@ import { getCourseById } from "@/lib/database/actions/course.actions";
 import { BookOpen, CirclePlay } from "lucide-react";
 import Image from "next/image";
 import DOMPurify from "isomorphic-dompurify";
+import { getUnitsByCourseId } from "@/lib/database/actions/unit.actions";
 
 type GetCourseProps = {
   params: {
@@ -14,6 +15,7 @@ type GetCourseProps = {
 export default async function ({ params: { id } }: GetCourseProps) {
   console.log("\n\n\n*** COURSE ID", id);
   const course = await getCourseById(id);
+  const { units, unitsCount } = await getUnitsByCourseId(id);
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
@@ -26,7 +28,8 @@ export default async function ({ params: { id } }: GetCourseProps) {
       />
       <div className="border p-4 rounded-xl w-full">
         <Badge>
-          <BookOpen className="mr-2" /> 3 Units
+          <BookOpen className="mr-2" />{" "}
+          {unitsCount === 1 ? `${unitsCount} Unit` : `${unitsCount} Units`}
         </Badge>
         <h1 className="font-bold text-2xl">{course.title}</h1>
         <div
@@ -36,8 +39,8 @@ export default async function ({ params: { id } }: GetCourseProps) {
           }}
         />
         <Badge variant="secondary">{course.category.name}</Badge>
-        <Progress value={33} />
-        <h3>33% Complete</h3>
+        <Progress value={33} className="mt-2" />
+        <h3 className="text-sm mb-2">33% Complete</h3>
         <Button className="flex gap-2">
           <CirclePlay /> Continue watching
         </Button>

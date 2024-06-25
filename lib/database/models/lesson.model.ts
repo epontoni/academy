@@ -7,6 +7,7 @@ export interface ILesson extends Document {
 
   title: string;
   description: string;
+  position: number;
   uniteId: IUnit;
   atachments: IAttachment[];
 
@@ -18,6 +19,7 @@ const LessonSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
+    position: { type: Number },
     isCompleted: { type: Boolean, default: false },
     unitId: { type: Schema.Types.ObjectId, ref: "Unit" },
     attachments: [

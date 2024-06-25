@@ -43,7 +43,9 @@ export async function getUnitsByCourseId(courseId: string) {
       position: -1,
     });
 
-    return JSON.parse(JSON.stringify(units));
+    const unitsCount = await Unit.countDocuments({ courseId: courseId });
+
+    return JSON.parse(JSON.stringify({ units, unitsCount }));
   } catch (error) {
     handleError(error);
   }
