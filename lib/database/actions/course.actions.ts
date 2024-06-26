@@ -15,6 +15,7 @@ import User from "@/lib/database/models/user.model";
 import { revalidatePath } from "next/cache";
 import Unit from "@/lib/database/models/unit.model";
 import Progress from "@/lib/database/models/progress.model";
+import Lesson from "../models/lesson.model";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: `^${name}$`, $options: "i" } }); // name -> `^${name}$` para devolver los documentos que coincidan exactamente con el nombre proporcionado
@@ -109,6 +110,24 @@ export async function updateCourse({
 export async function deleteEvent({ courseId, path }: DeleteCourseParams) {
   try {
     await connectToDatabase();
+
+    // Get the units of the course
+    const units = await Unit.find({ courseId });
+
+    units.forEach(async (unit) => {
+      // Get the lessons of the unit
+      const lessons = await Lesson.find({ unitId: unit._id });
+
+      lessons.forEach(async (lesson) => {
+        await Lesson.findOneAndDelete({ _id: lesson._id });
+      });
+
+      // Delete course unit
+      await Unit.findOneAndDelete({ _id: unit._id });
+    });
+
+    // Delete course progress
+    await Progress.findOneAndDelete({ courseId });
 
     const deletedCourse = await Course.findByIdAndDelete(courseId);
     if (deletedCourse) revalidatePath(path);

@@ -20,7 +20,7 @@ export default function Card({ course, hasOrderLink, hidePrice }: CardProps) {
   const isEventCreator = userId === course.instructor._id.toString();
 
   return (
-    <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-lg bg-background shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
+    <div className="group relative flex min-h-[380px] w-full max-w-[400px] flex-col overflow-hidden rounded-lg bg-background dark:border shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
       <Link
         href={`/courses/${course._id}`}
         style={{ backgroundImage: `url(${course.imageUrl})` }}
@@ -32,7 +32,7 @@ export default function Card({ course, hasOrderLink, hidePrice }: CardProps) {
       {isEventCreator && !hidePrice && (
         <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-lg bg-background p-2 shadow-sm transition-all">
           <Link href={`/dashboard/edit/${course._id}`}>
-            <SquarePen className="w-5 h-5 text-muted-foreground hover:text-green-500" />
+            <SquarePen className="w-5 h-5 hover:text-green-500" />
           </Link>
           <DeleteConfirmation courseId={course._id} />
         </div>

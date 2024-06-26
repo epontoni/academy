@@ -38,6 +38,7 @@ import { handleError } from "@/lib/utils";
 import RichEditor from "./RichEditor";
 import Link from "next/link";
 import Category, { ICategory } from "@/lib/database/models/category.model";
+import DeleteConfirmation from "@/components/delete-confirmation";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -168,8 +169,9 @@ export function CourseForm({
           <div className="flex gap-4 items-start">
             <Button variant="outline">Publish</Button>
             <Button>
-              <Trash />
+              <DeleteConfirmation courseId={courseId!} />
             </Button>
+            {/* <DeleteConfirmation courseId={courseId!} /> */}
           </div>
         </div>
       )}

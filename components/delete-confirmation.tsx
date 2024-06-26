@@ -31,16 +31,16 @@ export default function DeleteConfirmation({
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <Trash className="w-5 h-5 text-muted-foreground hover:text-rose-500" />
+        <Trash className="w-5 h-5 hover:text-rose-500" />
       </AlertDialogTrigger>
 
       <AlertDialogContent className="bg-background">
         <AlertDialogHeader>
           <AlertDialogTitle>
-            Está seguro que desea borrar el evento?
+            Está seguro que desea borrar el curso?
           </AlertDialogTitle>
           <AlertDialogDescription className="p-regular-16 text-grey-600">
-            Esto borrará permanentemente el evento y no se podrá recuperar.
+            Esto borrará permanentemente el curso y no se podrá recuperar.
           </AlertDialogDescription>
         </AlertDialogHeader>
 
