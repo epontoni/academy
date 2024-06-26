@@ -56,11 +56,11 @@ export default function Collection({
           )}
         </div>
       ) : (
-        <div className="flex justify-center items-center max-w-7xl lg:mx-auto p-5 md:px-5 xl:px-0 w-full min-h-[100px] flex-col gap-3 rounded-md bg-gray-100 py-28 text-center">
+        <div className="flex justify-center items-center max-w-7xl lg:mx-auto p-5 md:px-5 xl:px-0 w-full min-h-[100px] flex-col gap-3 rounded-md bg-secondary py-28 text-center">
           <h3 className="font-bold text-[24px] leading-[36px] md:text-[28px] text-primary">
             {emptyTitle}
           </h3>
-          <p className="font-normal text-[20px] leading-[36px] md:text-[24px] text-primary-foreground">
+          <p className="font-normal text-[20px] leading-[36px] md:text-[24px] text-secondary-foreground">
             {emptyStateSubtext}
           </p>
         </div>

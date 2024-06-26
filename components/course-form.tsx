@@ -37,7 +37,7 @@ import { handleError } from "@/lib/utils";
 
 import RichEditor from "./RichEditor";
 import Link from "next/link";
-import { ICategory } from "@/lib/database/models/category.model";
+import Category, { ICategory } from "@/lib/database/models/category.model";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -46,8 +46,8 @@ const formSchema = z.object({
   description: z.string().min(10, {
     message: "The description must be at least 10 characters.",
   }),
-  imageUrl: z.string().url("La URL de la imagen no es válida"),
   category: z.string(),
+  imageUrl: z.string().url("La URL de la imagen no es válida"),
   isPublished: z.boolean().default(false),
 });
 
@@ -66,6 +66,7 @@ export function CourseForm({
     course && type === "Update"
       ? {
           ...course,
+          category: course.category._id,
         }
       : courseDefaultValues;
 
@@ -100,12 +101,8 @@ export function CourseForm({
     if (type === "Create") {
       try {
         const newCourse = await createCourse({
-          title: values.title,
-          description: values.description,
-          isPublished: values.isPublished,
-          imageUrl: uploadedImageUrl,
+          ...values,
           instructor: userId,
-          category: values.category,
         });
 
         if (newCourse) {
@@ -130,7 +127,6 @@ export function CourseForm({
         const updatedCourse = await updateCourse({
           course: {
             ...values,
-            category: values.category,
             _id: courseId,
             imageUrl: uploadedImageUrl,
           },
@@ -205,11 +201,11 @@ export function CourseForm({
               name="category"
               render={({ field }) => (
                 <FormItem className="w-full rounded-lg border p-4">
-                  <FormLabel>Categoría</FormLabel>
+                  <FormLabel>Category</FormLabel>
                   <FormControl>
                     <Dropdown
                       onChangeHandler={field.onChange}
-                      categoryId={course?.category} // course?.category?._id
+                      categoryId={course?.category._id} // course?.category?._id
                     />
                   </FormControl>
                   <FormMessage />
@@ -298,7 +294,7 @@ export function CourseForm({
             ) : type === "Create" ? (
               "Crear curso"
             ) : (
-              "Editar cursp"
+              "Editar curso"
             )}
           </Button>
         </form>

@@ -1,6 +1,7 @@
 import { Schema, model, models } from "mongoose";
 import { ICategory } from "@/lib/database/models/category.model";
 import { IUnit } from "@/lib/database/models/unit.model";
+import { IProgress } from "./progress.model";
 
 export interface ICourse extends Document {
   _id: string;
@@ -14,8 +15,9 @@ export interface ICourse extends Document {
   };
   imageUrl: string;
   isPublished: boolean;
-  category: { _id: string; name: string };
+  category: ICategory;
   units: IUnit[];
+  progress: IProgress;
 
   createdAt: Date;
   updatedAt: Date;
@@ -34,6 +36,7 @@ const CourseSchema = new Schema(
         unitId: { type: Schema.Types.ObjectId, ref: "Unit" },
       },
     ],
+    progress: { type: Schema.Types.ObjectId, ref: "Progress" },
   },
   { timestamps: true }
 );

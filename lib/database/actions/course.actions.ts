@@ -13,7 +13,8 @@ import { handleError } from "@/lib/utils";
 import Category from "@/lib/database/models/category.model";
 import User from "@/lib/database/models/user.model";
 import { revalidatePath } from "next/cache";
-import Unit from "../models/unit.model";
+import Unit from "@/lib/database/models/unit.model";
+import Progress from "@/lib/database/models/progress.model";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: `^${name}$`, $options: "i" } }); // name -> `^${name}$` para devolver los documentos que coincidan exactamente con el nombre proporcionado
@@ -27,7 +28,18 @@ const populateCourse = async (query: any) => {
       select: "_id firstName lastName",
     })
     .populate({ path: "category", model: Category, select: "_id name" });
-  //.populate({ path: "units", model: Unit, select: "_id title description position"});
+  // Comment this if break the app
+  // .populate({
+  //   path: "units",
+  //   model: Unit,
+  //   select: "_id title description position isPublished lessons",
+  // })
+  // .populate({
+  //   path: "progress",
+  //   model: Progress,
+  //   select:
+  //     "_id studentId courseId totalLessons completedLessons percentage lastLesson isCompleted createdAt updatedAt",
+  // })
 };
 
 export async function createCourse(course: CreateCourseParams) {
@@ -82,7 +94,7 @@ export async function updateCourse({
 
     const updatedCourse = await Course.findByIdAndUpdate(
       course._id,
-      { ...course, category: course.category },
+      { ...course },
       { new: true }
     );
     revalidatePath(path);
@@ -105,7 +117,57 @@ export async function deleteEvent({ courseId, path }: DeleteCourseParams) {
   }
 }
 
-// GET ALL EVENTS WITH PAGINATION
+// GET ALL PUBLISHED WITH PAGINATION
+export const getAllPublishedCourses = async ({
+  query,
+  limit = 6,
+  page,
+  category,
+}: GetAllCoursesParams) => {
+  try {
+    await connectToDatabase();
+
+    const titleCondition = query
+      ? { title: { $regex: query, $options: "i" } }
+      : {};
+
+    const categoryCondition = category
+      ? await getCategoryByName(category)
+      : null;
+
+    const conditions = {
+      $and: [
+        titleCondition,
+        categoryCondition ? { category: categoryCondition._id } : {},
+        { isPublished: true },
+      ],
+    };
+
+    const skipAmount = (Number(page) - 1) * limit;
+
+    const courseQuery = Course.find(conditions)
+      .sort({ createdAt: "desc" })
+      .skip(skipAmount)
+      .limit(limit);
+
+    const courses = await populateCourse(courseQuery);
+    const coursesCount = await Course.countDocuments(conditions);
+
+    // if(!events) {
+    //     throw new Error("Event not found");
+    // }
+
+    return {
+      data: JSON.parse(JSON.stringify(courses)),
+      totalPages: Math.ceil(coursesCount / limit),
+      coursesCount,
+    };
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+// GET ALL COURSES WITH PAGINATION
 export const getAllCourses = async ({
   query,
   limit = 6,

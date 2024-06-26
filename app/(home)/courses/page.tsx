@@ -2,7 +2,7 @@ import CategoryFilter from "@/components/category-filter";
 import Collection from "@/components/collection";
 import Search from "@/components/search";
 import SearchBar from "@/components/search-bar";
-import { getAllCourses } from "@/lib/database/actions/course.actions";
+import { getAllPublishedCourses } from "@/lib/database/actions/course.actions";
 import { SearchParamProps } from "@/types";
 
 export default async function CoursesPage({ searchParams }: SearchParamProps) {
@@ -10,7 +10,7 @@ export default async function CoursesPage({ searchParams }: SearchParamProps) {
   const searchText = (searchParams?.query as string) || "";
   const category = (searchParams?.category as string) || "";
 
-  const courses = await getAllCourses({
+  const courses = await getAllPublishedCourses({
     query: searchText,
     limit: 6,
     page: page,

@@ -1,4 +1,3 @@
-import Category, { ICategory } from "@/lib/database/models/category.model";
 import { ICourse } from "@/lib/database/models/course.model";
 import { LucideProps } from "lucide-react";
 import {
@@ -16,26 +15,40 @@ export type MenuItem = {
   >;
 };
 
+// ====== COURSE PARAMS
 export type CreateCourseParams = {
   title: string;
   description: string;
-  isPublished?: boolean;
-  imageUrl: string;
   instructor: string;
+  imageUrl: string;
+  isPublished?: boolean;
   category: string;
+};
+
+export type DeleteCourseParams = {
+  courseId: string;
+  path: string;
+};
+
+export type UpdateCourseParams = {
+  userId: string;
+  // course: Partial<ICourse>; // Check the Partial<>
+  course: {
+    _id: string;
+    title: string;
+    description: string;
+    // instructor: string;
+    imageUrl: string;
+    isPublished: boolean;
+    category: string;
+  };
+  path: string;
 };
 
 export type CourseFormProps = {
   userId: string;
   type: "Create" | "Update";
-  course?: {
-    title: string;
-    description: string;
-    isPublished?: boolean;
-    imageUrl: string;
-    instructor: string;
-    category: string;
-  };
+  course?: ICourse;
   courseId?: string;
 };
 
@@ -98,26 +111,6 @@ export type FileUploadProps = {
 // ====== CATEGORY PARAMS
 export type CreateCategoryParams = {
   categoryName: string;
-};
-
-export type DeleteCourseParams = {
-  courseId: string;
-  path: string;
-};
-
-export type UpdateCourseParams = {
-  userId: string;
-  // course: Partial<ICourse>; // Check the Partial<>
-  course: {
-    _id: string;
-    title: string;
-    description: string;
-    // instructor: string;
-    imageUrl: string;
-    isPublished: boolean;
-    category: string;
-  };
-  path: string;
 };
 
 // ====== URL QUERY PARAMS
