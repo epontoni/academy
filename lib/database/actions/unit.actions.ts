@@ -68,3 +68,51 @@ export async function reorderUnits(items: IUnit[], courseId: string) {
     handleError(e);
   }
 }
+
+export async function getUnitById(unitId: string) {
+  try {
+    await connectToDatabase();
+
+    const unit = await Unit.findOne({ _id: unitId });
+
+    return JSON.parse(JSON.stringify(unit));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+type UpdateUnitParams = {
+  unit: {
+    _id: string;
+    title: string;
+    description: string;
+    isPublished: boolean;
+  };
+  path: string;
+};
+// UPDATE UNIT
+export async function updateUnit({ unit, path }: UpdateUnitParams) {
+  try {
+    await connectToDatabase();
+
+    // console.log(
+    //   `***\n updateEvent: userId: ${userId}, event: ${event}, path: ${path}, eventToUpdate: ${eventToUpdate}, orgnizer: ${eventToUpdate.organizer.toHexString()} \n***`
+    // );
+
+    const unitToUpdate = await Unit.findById(unit._id);
+    if (!unitToUpdate) {
+      throw new Error("Unauthorized or Unit not found"); // TODO: Check the autorization
+    }
+
+    const updatedUnit = await Unit.findByIdAndUpdate(
+      unit._id,
+      { ...unit },
+      { new: true }
+    );
+    revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedUnit));
+  } catch (error) {
+    handleError(error);
+  }
+}

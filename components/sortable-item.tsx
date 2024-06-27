@@ -5,6 +5,9 @@ import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Pencil } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { useRouter } from "next/navigation";
+import { Button } from "./ui/button";
+import Link from "next/link";
 
 interface Item {
   _id: string;
@@ -13,11 +16,19 @@ interface Item {
   position: UniqueIdentifier;
 }
 
-export default function SortableItem({ item }: { item: Item }) {
+export default function SortableItem({
+  item,
+  courseId,
+}: {
+  item: Item;
+  courseId: string;
+}) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
       id: item.position,
     });
+
+  const router = useRouter();
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -36,15 +47,16 @@ export default function SortableItem({ item }: { item: Item }) {
       {item.title}
       <div className="flex items-center gap-4 ml-auto">
         <Badge
-          className="ml-auto"
+          className="ml-auto hover:bg-muted-foreground"
           variant={item.isPublished ? "default" : "secondary"}
         >
           {item.isPublished ? "Published" : "Unpublished"}
         </Badge>
-        <Pencil
-          className="ml-auto h-4 w-4 hover:text-primary"
-          onClick={() => {}}
-        />
+        <Button asChild variant="ghost">
+          <Link href={`/dashboard/edit/${courseId}/curriculum/${item._id}`}>
+            <Pencil className="ml-auto h-4 w-4 hover:text-primary" />
+          </Link>
+        </Button>
       </div>
     </div>
   );

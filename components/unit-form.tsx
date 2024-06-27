@@ -26,7 +26,7 @@ import { useState } from "react";
 import Dropdown from "@/components/dropdown";
 
 import { useUploadThing } from "@/lib/uploadthing";
-import { usePathname, useRouter } from "next/navigation";
+import { redirect, usePathname, useRouter } from "next/navigation";
 import FileUpload from "@/components/file-upload";
 import { Switch } from "@/components/ui/switch";
 import { Loader2, Trash } from "lucide-react";
@@ -34,7 +34,12 @@ import { handleError } from "@/lib/utils";
 
 import RichEditor from "./RichEditor";
 import Link from "next/link";
-import { createUnit } from "@/lib/database/actions/unit.actions";
+import {
+  createUnit,
+  getUnitById,
+  updateUnit,
+} from "@/lib/database/actions/unit.actions";
+import { IUnit } from "@/lib/database/models/unit.model";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -49,11 +54,18 @@ const formSchema = z.object({
 type UnitFormProps = {
   userId?: string;
   type: "Create" | "Update";
-  course?: {};
   courseId: string;
+  unit?: IUnit;
+  unitId?: string;
 };
 
-export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
+export function UnitForm({
+  userId,
+  type,
+  courseId,
+  unit,
+  unitId,
+}: UnitFormProps) {
   // const [files, setFiles] = useState<File[]>([]);
   // const { startUpload } = useUploadThing("imageUploader");
 
@@ -61,16 +73,19 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
 
   const router = useRouter();
   const pathname = usePathname();
-  const initialValues = {
+
+  const unitDefaultValues = {
     title: "",
     description: "",
     isPublished: false,
   };
-  // course && type === "Update"
-  //   ? {
-  //       ...course,
-  //     }
-  //   : courseDefaultValues;
+
+  const initialValues =
+    unit && type === "Update"
+      ? {
+          ...unit,
+        }
+      : unitDefaultValues;
 
   // 1. Define your form.
   const form = useForm<z.infer<typeof formSchema>>({
@@ -111,6 +126,9 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
           form.reset();
           //router.push(`/dashboard/edit/${newUnit.courseId}/curriculum`);
           toast.success("Unidad creada correctamente!");
+          setTimeout(() => {
+            router.push(`/dashboard/edit/${courseId}/curriculum`);
+          }, 3000);
         } else {
           toast.error("Something went wrong");
         }
@@ -120,32 +138,29 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
       }
     }
 
-    // UPDATE EVENT
-    // if (type === "Update") {
-    //   if (!courseId) {
-    //     router.back();
-    //     return;
-    //   }
-    //   try {
-    //     const updatedCourse = await updateUnit({
-    //       course: {
-    //         ...values,
-    //         //category: values.category as Partial<ICategory>,
-    //         _id: courseId,
-    //         imageUrl: uploadedImageUrl,
-    //       },
-    //       userId,
-    //       path: `/courses/${courseId}`,
-    //     });
-    //     if (updatedCourse) {
-    //       form.reset();
-    //       router.push(`/courses/${updatedCourse._id}`);
-    //     }
-    //   } catch (error) {
-    //     console.log("[Error]: Error al actualizar el curso.");
-    //     handleError(error);
-    //   }
-    // }
+    // UPDATE UNIT
+    if (type === "Update") {
+      if (!unitId) {
+        router.back();
+        return;
+      }
+      try {
+        const updatedUnit = await updateUnit({
+          unit: {
+            ...values,
+            _id: unitId,
+          },
+          path: `/dashboard/edit/${courseId}/curriculum`,
+        });
+        if (updatedUnit) {
+          form.reset();
+          router.push(`/dashboard/edit/${courseId}/curriculum`); // /${updatedUnit._id}
+        }
+      } catch (error) {
+        console.log("[Error]: Error al actualizar la unidad.");
+        handleError(error);
+      }
+    }
   }
 
   const routes = [
@@ -177,7 +192,9 @@ export function UnitForm({ userId, type, course, courseId }: UnitFormProps) {
           </div>
         </div>
       )}
-      <h1 className="font-bold text-xl mb-2">Add new unit</h1>
+      <h1 className="font-bold text-xl mb-2">
+        {type === "Create" ? "Add new unit" : "Edit unit"}
+      </h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
