@@ -7,16 +7,18 @@ import {
   arrayMove,
 } from "@dnd-kit/sortable";
 import SortableItem from "@/components/sortable-item";
-import { IUnit } from "@/lib/database/models/unit.model";
-import { reorderUnits } from "@/lib/database/actions/unit.actions";
 import { toast } from "sonner";
+import { ILesson } from "@/lib/database/models/lesson.model";
+import { reorderLessons } from "@/lib/database/actions/lesson.actions";
 
-export default function DragAndDrop({
+export default function DragAndDropLessons({
   elements,
   courseId,
+  unitId,
 }: {
-  elements: IUnit[];
+  elements: ILesson[];
   courseId: string;
+  unitId: string;
 }) {
   const [items, setItems] = useState(
     elements.sort((a, b) => a.position - b.position) || []
@@ -25,7 +27,7 @@ export default function DragAndDrop({
   const isFirstRender = useRef(true);
 
   const saveData = async () => {
-    const result = await reorderUnits(items, courseId);
+    const result = await reorderLessons(items, courseId, unitId);
 
     if (result) {
       toast.success("Reordenado exitoso");

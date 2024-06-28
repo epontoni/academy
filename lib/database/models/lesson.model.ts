@@ -20,6 +20,7 @@ const LessonSchema = new Schema(
     title: { type: String, required: true },
     description: { type: String, required: true },
     position: { type: Number },
+    isPublished: { type: Boolean, default: false },
     isCompleted: { type: Boolean, default: false },
     unitId: { type: Schema.Types.ObjectId, ref: "Unit" },
     attachments: [

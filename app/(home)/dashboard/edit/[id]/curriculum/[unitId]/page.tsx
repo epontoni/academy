@@ -1,5 +1,7 @@
+import { Button } from "@/components/ui/button";
 import { UnitForm } from "@/components/unit-form";
 import { getUnitById } from "@/lib/database/actions/unit.actions";
+import Link from "next/link";
 
 export default async function EditUnitPage({
   params,
@@ -17,7 +19,6 @@ export default async function EditUnitPage({
 
   return (
     <>
-      {`Edit unit ${params.unitId}`}
       <UnitForm
         type="Update"
         courseId={params.id}

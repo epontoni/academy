@@ -182,6 +182,11 @@ export function UnitForm({
                 <Link href={route.path}>{route.label}</Link>
               </Button>
             ))}
+            <Button asChild>
+              <Link href={`/dashboard/create/lesson/${unitId}`}>
+                Create new lesson
+              </Link>
+            </Button>
           </div>
 
           <div className="flex gap-4 items-start">

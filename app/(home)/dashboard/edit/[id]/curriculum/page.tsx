@@ -15,6 +15,7 @@ export default async function CurriculumPage({
           Create new unit
         </Link>
       </Button>
+      <h2 className="font-bold text-xl">Units</h2>
       <UnitList courseId={params.id} />
       {/* <UnitForm type="Create" courseId={params.id} /> */}
     </>
