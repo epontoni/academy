@@ -8,6 +8,8 @@ export interface ILesson extends Document {
   title: string;
   description: string;
   position: number;
+  isCompleted: boolean;
+  isPublished: boolean;
   uniteId: IUnit;
   atachments: IAttachment[];
 
