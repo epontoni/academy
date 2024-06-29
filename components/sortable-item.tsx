@@ -19,9 +19,13 @@ interface Item {
 export default function SortableItem({
   item,
   courseId,
+  unitId,
+  type,
 }: {
   item: Item;
   courseId: string;
+  unitId?: string;
+  type: "Unit" | "Lesson";
 }) {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({
@@ -29,6 +33,11 @@ export default function SortableItem({
     });
 
   const router = useRouter();
+
+  const editPath =
+    type === "Unit"
+      ? `/dashboard/edit/${courseId}/curriculum/${item._id}`
+      : `/dashboard/edit/${courseId}/curriculum/${unitId}/lessons/${item._id}`;
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -53,7 +62,7 @@ export default function SortableItem({
           {item.isPublished ? "Published" : "Unpublished"}
         </Badge>
         <Button asChild variant="ghost">
-          <Link href={`/dashboard/edit/${courseId}/curriculum/${item._id}`}>
+          <Link href={editPath}>
             <Pencil className="ml-auto h-4 w-4 hover:text-primary" />
           </Link>
         </Button>

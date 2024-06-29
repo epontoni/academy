@@ -44,7 +44,10 @@ import Link from "next/link";
 
 import DeleteConfirmation from "@/components/delete-confirmation";
 import { ILesson } from "@/lib/database/models/lesson.model";
-import { createLesson } from "@/lib/database/actions/lesson.actions";
+import {
+  createLesson,
+  updateLesson,
+} from "@/lib/database/actions/lesson.actions";
 import {
   Card,
   CardContent,
@@ -83,6 +86,7 @@ const lessonDefaultValues = {
 
 type LessonFormProps = {
   type: "Create" | "Update";
+  courseId: string;
   unitId: string;
   lesson?: ILesson;
   lessonId?: string;
@@ -90,17 +94,25 @@ type LessonFormProps = {
 
 export function LessonForm({
   type,
+  courseId,
   unitId,
   lesson,
   lessonId,
 }: LessonFormProps) {
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: lessonDefaultValues,
-  });
-
   const router = useRouter();
   const pathname = usePathname();
+
+  const initialValues =
+    lesson && type === "Update"
+      ? {
+          ...lesson,
+        }
+      : lessonDefaultValues;
+
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: initialValues,
+  });
 
   const { fields, append, remove } = useFieldArray({
     control: form.control,
@@ -114,13 +126,6 @@ export function LessonForm({
   const handleAppend = () => {
     append({ resourceName: "", resourceUrl: "" });
   };
-
-  const initialValues =
-    lesson && type === "Update"
-      ? {
-          ...lesson,
-        }
-      : lessonDefaultValues;
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     // CREATE COURSE
@@ -156,28 +161,33 @@ export function LessonForm({
     }
 
     // UPDATE UNIT
-    // if (type === "Update") {
-    //   if (!unitId) {
-    //     router.back();
-    //     return;
-    //   }
-    //   try {
-    //     const updatedUnit = await updateUnit({
-    //       unit: {
-    //         ...values,
-    //         _id: unitId,
-    //       },
-    //       path: `/dashboard/edit/${courseId}/curriculum`,
-    //     });
-    //     if (updatedUnit) {
-    //       form.reset();
-    //       router.push(`/dashboard/edit/${courseId}/curriculum`); // /${updatedUnit._id}
-    //     }
-    //   } catch (error) {
-    //     console.log("[Error]: Error al actualizar la unidad.");
-    //     handleError(error);
-    //   }
-    // }
+    if (type === "Update") {
+      // if (!unitId) {
+      //   router.back();
+      //   return;
+      // }
+      try {
+        const updatedLesson = await updateLesson({
+          lesson: {
+            _id: lessonId!,
+            title: values.title,
+            description: values.description,
+            isPublished: values.isPublished,
+            // attachments: values.attachments,
+          },
+          path: `/dashboard/edit/${courseId}/curriculum/${unitId}/lessons`,
+        });
+        if (updatedLesson) {
+          form.reset();
+          router.push(
+            `/dashboard/edit/${courseId}/curriculum/${unitId}/lessons`
+          ); // /${updatedUnit._id}
+        }
+      } catch (error) {
+        console.log("[Error]: Error al actualizar la lección.");
+        handleError(error);
+      }
+    }
   }
 
   //   const routes = [
@@ -211,7 +221,9 @@ export function LessonForm({
         </div>
       )*/}
 
-      <h1 className="font-bold my-2">Create Lesson</h1>
+      <h1 className="font-bold my-2">
+        {type === "Create" ? "Create Lesson" : "Update Lesson"}
+      </h1>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

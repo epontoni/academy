@@ -4,7 +4,9 @@ import { connectToDatabase } from "@/lib/database";
 import { handleError } from "@/lib/utils";
 import Lesson, { ILesson } from "@/lib/database/models/lesson.model";
 import { revalidatePath } from "next/cache";
-import Attachment from "@/lib/database/models/attachment.model";
+import Attachment, {
+  IAttachment,
+} from "@/lib/database/models/attachment.model";
 
 type CreateLessonParams = {
   title: string;
@@ -46,6 +48,17 @@ export async function getLessonsByUnitId(unitId: string) {
   }
 }
 
+export async function getLessonsById(lessonId: string) {
+  try {
+    // const course = await populateCourse(Course.findById(id));
+    const lesson = await populateLesson(Lesson.findOne({ _id: lessonId }));
+
+    return JSON.parse(JSON.stringify(lesson));
+  } catch (e) {
+    handleError(e);
+  }
+}
+
 export async function reorderLessons(
   items: ILesson[],
   courseId: string,
@@ -65,5 +78,46 @@ export async function reorderLessons(
     return JSON.parse(JSON.stringify({ status: true }));
   } catch (e) {
     handleError(e);
+  }
+}
+
+type UpdateLessonParams = {
+  lesson: {
+    _id: string;
+    title: string;
+    description: string;
+    isPublished: boolean;
+    // attachments: { resourceName: string; resourceUrl: string }[] | [];
+  };
+  path: string;
+};
+
+// UPDATE LESSON
+export async function updateLesson({ lesson, path }: UpdateLessonParams) {
+  try {
+    await connectToDatabase();
+
+    const lessonToUpdate = await Lesson.findById(lesson._id);
+    if (!lessonToUpdate) {
+      throw new Error("Unauthorized or Lesson not found"); // TODO: Check the autorization
+    }
+
+    // attachments
+    // const attachments = lesson.attachments;
+
+    // attachments.forEach((resource) => {
+    //   // update attachment file.
+    // });
+
+    const updatedLesson = await Lesson.findByIdAndUpdate(
+      lesson._id,
+      { ...lesson },
+      { new: true }
+    );
+    revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedLesson));
+  } catch (error) {
+    handleError(error);
   }
 }

@@ -90,6 +90,7 @@ type UpdateUnitParams = {
   };
   path: string;
 };
+
 // UPDATE UNIT
 export async function updateUnit({ unit, path }: UpdateUnitParams) {
   try {

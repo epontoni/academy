@@ -61,7 +61,12 @@ export default function DragAndDrop({
         strategy={verticalListSortingStrategy}
       >
         {items.map((item, index) => (
-          <SortableItem key={index} item={item} courseId={courseId} />
+          <SortableItem
+            key={index}
+            item={item}
+            courseId={courseId}
+            type="Unit"
+          />
         ))}
       </SortableContext>
     </DndContext>
