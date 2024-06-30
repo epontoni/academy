@@ -7,10 +7,12 @@ import { revalidatePath } from "next/cache";
 import Attachment, {
   IAttachment,
 } from "@/lib/database/models/attachment.model";
+import mongoose from "mongoose";
 
 type CreateLessonParams = {
   title: string;
   description: string;
+  media: string;
   isPublished: boolean;
   unitId: string;
 };
@@ -86,6 +88,7 @@ type UpdateLessonParams = {
     _id: string;
     title: string;
     description: string;
+    media: string;
     isPublished: boolean;
     // attachments: { resourceName: string; resourceUrl: string }[] | [];
   };
@@ -115,6 +118,37 @@ export async function updateLesson({ lesson, path }: UpdateLessonParams) {
       { new: true }
     );
     revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedLesson));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// Add attachment's lesson
+export async function addAttachments(
+  lessonId: string,
+  attachments: IAttachment[] // Check
+) {
+  try {
+    await connectToDatabase();
+
+    const lessonToUpdate = await Lesson.findById(lessonId);
+    if (!lessonToUpdate) {
+      throw new Error("Unauthorized or Lesson not found"); // TODO: Check the autorization
+    }
+
+    const ResourceIds: mongoose.Types.ObjectId[] = [];
+
+    attachments.forEach((resource) => {
+      ResourceIds.push(new mongoose.Types.ObjectId(resource._id));
+    });
+
+    const updatedLesson = await Lesson.findByIdAndUpdate(
+      lessonId,
+      { attachments: [...lessonToUpdate.attachments, ...ResourceIds] },
+      { new: true }
+    );
 
     return JSON.parse(JSON.stringify(updatedLesson));
   } catch (error) {

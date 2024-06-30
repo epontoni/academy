@@ -48,9 +48,9 @@ export default function HomeLayout({
       <div className="flex flex-col">
         <header className="sticky top-0 z-10 flex justify-between h-[57px] items-center gap-1 border-b bg-background px-4">
           <h1 className="text-xl font-semibold">Academy</h1>
-          <div className="hidden sm:flex sm:gap-1">
+          {/* <div className="hidden sm:flex sm:gap-1">
             <SearchBar />
-          </div>
+          </div> */}
 
           <div className="flex gap-2">
             <ThemeToggle />

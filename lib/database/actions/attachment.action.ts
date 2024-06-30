@@ -2,7 +2,9 @@
 
 import { handleError } from "@/lib/utils";
 import { connectToDatabase } from "@/lib/database";
-import Attachment from "@/lib/database/models/attachment.model";
+import Attachment, {
+  IAttachment,
+} from "@/lib/database/models/attachment.model";
 
 interface CreateResourceParams {
   attachments: { resourceName: string; resourceUrl: string }[];
@@ -16,15 +18,21 @@ export const createResource = async ({
   try {
     await connectToDatabase();
 
+    const resources: IAttachment[] = [];
+
     for (let resource of attachments) {
       const newResource = await Attachment.create({
         resourceName: resource.resourceName,
         resourceUrl: resource.resourceUrl,
         lessonId: lessonId,
       });
+
+      if (newResource) {
+        resources.push(newResource);
+      }
     }
 
-    return JSON.parse(JSON.stringify({ status: true }));
+    return JSON.parse(JSON.stringify({ status: true, resources: resources }));
   } catch (error) {
     handleError(error);
   }

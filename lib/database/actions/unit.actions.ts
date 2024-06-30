@@ -4,12 +4,21 @@ import { connectToDatabase } from "@/lib/database";
 import Unit, { IUnit } from "@/lib/database/models/unit.model";
 import { handleError } from "@/lib/utils";
 import { revalidatePath } from "next/cache";
+import Lesson from "../models/lesson.model";
 
 type CreateUnitParams = {
   title: string;
   description: string;
   isPublished: boolean;
   courseId: string;
+};
+
+const populateUnit = async (query: any) => {
+  return query.populate({
+    path: "lessons",
+    model: Lesson,
+    select: "_id title isCompleted position",
+  });
 };
 
 export async function createUnit(unit: CreateUnitParams) {
@@ -39,9 +48,11 @@ export async function getUnitsByCourseId(courseId: string) {
   try {
     await connectToDatabase();
 
-    const units = await Unit.find({ courseId: courseId }).sort({
-      position: -1,
-    });
+    const units = await populateUnit(
+      Unit.find({ courseId: courseId }).sort({
+        position: -1,
+      })
+    );
 
     const unitsCount = await Unit.countDocuments({ courseId: courseId });
 
@@ -111,6 +122,28 @@ export async function updateUnit({ unit, path }: UpdateUnitParams) {
       { new: true }
     );
     revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedUnit));
+  } catch (error) {
+    handleError(error);
+  }
+}
+
+// SAVE LESSON ID INTO THE LESSONS ARRAY
+export async function addLessonToUnit(unitId: string, lessonId: string) {
+  try {
+    await connectToDatabase();
+
+    const unitToUpdate = await Unit.findById(unitId);
+    if (!unitToUpdate) {
+      throw new Error("Unauthorized or Unit not found"); // TODO: Check the autorization
+    }
+
+    const updatedUnit = await Unit.findByIdAndUpdate(
+      unitId,
+      { lessons: [...unitToUpdate.lessons, lessonId] },
+      { new: true }
+    );
 
     return JSON.parse(JSON.stringify(updatedUnit));
   } catch (error) {

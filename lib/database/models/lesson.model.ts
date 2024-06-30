@@ -7,6 +7,7 @@ export interface ILesson extends Document {
 
   title: string;
   description: string;
+  media: string;
   position: number;
   isCompleted: boolean;
   isPublished: boolean;
@@ -21,15 +22,12 @@ const LessonSchema = new Schema(
   {
     title: { type: String, required: true },
     description: { type: String, required: true },
+    media: { type: String },
     position: { type: Number },
     isPublished: { type: Boolean, default: false },
     isCompleted: { type: Boolean, default: false },
     unitId: { type: Schema.Types.ObjectId, ref: "Unit" },
-    attachments: [
-      {
-        attachmentId: { type: Schema.Types.ObjectId, ref: "Attachment" },
-      },
-    ],
+    attachments: [{ type: Schema.Types.ObjectId, ref: "Attachment" }],
   },
   { timestamps: true }
 );

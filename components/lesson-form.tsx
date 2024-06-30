@@ -45,6 +45,7 @@ import Link from "next/link";
 import DeleteConfirmation from "@/components/delete-confirmation";
 import { ILesson } from "@/lib/database/models/lesson.model";
 import {
+  addAttachments,
   createLesson,
   updateLesson,
 } from "@/lib/database/actions/lesson.actions";
@@ -56,6 +57,7 @@ import {
   CardTitle,
 } from "./ui/card";
 import { createResource } from "@/lib/database/actions/attachment.action";
+import { addLessonToUnit } from "@/lib/database/actions/unit.actions";
 
 const formSchema = z.object({
   title: z.string().min(3, {
@@ -64,6 +66,7 @@ const formSchema = z.object({
   description: z.string().min(10, {
     message: "The description must be at least 10 characters.",
   }),
+  media: z.string(),
   isPublished: z.boolean().default(false),
   attachments: z.array(
     z.object({
@@ -134,6 +137,7 @@ export function LessonForm({
         const newLesson = await createLesson({
           title: values.title,
           description: values.description,
+          media: values.media,
           isPublished: values.isPublished,
           unitId: unitId!,
         });
@@ -144,6 +148,18 @@ export function LessonForm({
             attachments: values.attachments,
             lessonId: newLesson._id,
           });
+
+          // Add the attachments to the lesson array
+          const attachmentsToLessonArray = await addAttachments(
+            newLesson._id,
+            newAttachments.resources
+          );
+
+          // Add the lesson to the unit array
+          const lessonToUnitArray = await addLessonToUnit(
+            unitId,
+            newLesson._id
+          );
 
           form.reset();
           //router.push(`/dashboard/edit/${newUnit.courseId}/curriculum`);
@@ -172,6 +188,7 @@ export function LessonForm({
             _id: lessonId!,
             title: values.title,
             description: values.description,
+            media: values.media,
             isPublished: values.isPublished,
             // attachments: values.attachments,
           },
@@ -302,6 +319,25 @@ export function LessonForm({
                 </FormItem>
               )}
             /> */}
+          </div>
+
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="media"
+              render={({ field }) => (
+                <FormItem className="w-full rounded-lg border p-4">
+                  <FormLabel>Video or Document URL</FormLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://www.youtube.com/watch?v=..."
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
           </div>
 
           <Card>

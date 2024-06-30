@@ -1,4 +1,5 @@
 import { Schema, model, models } from "mongoose";
+import { ILesson } from "./lesson.model";
 
 export interface IUnit extends Document {
   _id: string;
@@ -8,7 +9,7 @@ export interface IUnit extends Document {
   position: number;
   isPublished: boolean;
   courseId: string;
-  lessons: string[]; // Check
+  lessons: Partial<ILesson>[]; // Check
 
   createdAt: Date;
   updatedAt: Date;
@@ -21,11 +22,7 @@ const UnitSchema = new Schema(
     position: { type: Number },
     isPublished: { type: Boolean, default: false },
     courseId: { type: Schema.Types.ObjectId, ref: "Course" },
-    lessons: [
-      {
-        lessonId: { type: Schema.Types.ObjectId, ref: "Lesson" },
-      },
-    ],
+    lessons: [{ type: Schema.Types.ObjectId, ref: "Lesson" }],
   },
   { timestamps: true }
 );

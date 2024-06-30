@@ -64,7 +64,7 @@ export default function Typewriter({ words, className }: Props) {
       className={cn(
         className,
         styles.typewriter,
-        "text-xl lg:text-3xl text-indigo-500 underline"
+        "text-xl lg:text-3xl text-primary underline"
       )}
     >
       Typewriter
