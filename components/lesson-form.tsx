@@ -330,7 +330,7 @@ export function LessonForm({
                   <FormLabel>Video or Document URL</FormLabel>
                   <FormControl>
                     <Input
-                      placeholder="https://www.youtube.com/watch?v=..."
+                      placeholder="https://www.youtube.com/embed/..."
                       {...field}
                     />
                   </FormControl>
